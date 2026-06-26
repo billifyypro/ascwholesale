@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fine Weight Bill - Cloud Sync</title>
+    <title>Fine Weight Bill</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
         :root {
             --primary-bg: #f3f6f9;
@@ -42,11 +40,47 @@
             padding-bottom: 80px;
         }
 
+        /* Login Screen */
+        #view-login {
+            display: flex;
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--primary-bg);
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .login-card input {
+            text-align: center;
+            letter-spacing: 5px;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
         /* Navbar */
         .navbar {
             background: var(--white);
             padding: 15px 20px;
-            display: flex;
+            display: none; /* Hidden until login */
             justify-content: space-between;
             align-items: center;
             box-shadow: var(--shadow-sm);
@@ -65,22 +99,6 @@
         
         .logo i {
             color: var(--accent-blue);
-        }
-
-        .cloud-status {
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            border-radius: 20px;
-            background: #e2e8f0;
-            color: var(--text-muted);
-            margin-left: 10px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .cloud-status.online {
-            background: var(--btn-green-bg);
-            color: var(--btn-green-text);
         }
 
         .menu-container {
@@ -210,10 +228,20 @@
         }
 
         /* Tables & Items */
-        .item-table-header {
-            margin-bottom: 5px;
+        .item-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
         }
 
+        .item-table th {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: left;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
         .item-row {
             display: flex;
             gap: 8px;
@@ -264,6 +292,20 @@
         .settlement-card {
             background: var(--white);
         }
+        
+        .rate-toggle {
+            background: #fdf2f8;
+            border: 1px dashed #fbcfe8;
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #be185d;
+            font-weight: 600;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
 
         .totals-box {
             background: var(--yellow-highlight);
@@ -308,7 +350,7 @@
             width: 100%;
             background: var(--white);
             padding: 15px 20px;
-            display: flex;
+            display: none; /* Hidden until login */
             gap: 15px;
             box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
             z-index: 99;
@@ -338,14 +380,6 @@
             background: var(--btn-dark);
             color: var(--white);
             flex: 1.5;
-        }
-
-        .btn-sync {
-            background: #e0e7ff;
-            color: #4338ca;
-            width: 100%;
-            margin-top: 10px;
-            border: 1px solid #c7d2fe;
         }
 
         /* History List */
@@ -410,67 +444,126 @@
         .btn-del { background: #fdf2f8; color: #be185d; border: 1px solid #fce7f3; }
         .btn-whatsapp { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
 
-        /* Full Screen Loader */
-        #loader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            font-weight: bold;
-            color: var(--accent-blue);
-            font-size: 1.2rem;
+        /* Print Layout */
+        #print-layout {
             display: none;
+            background: white;
+            padding: 20px;
+            color: black;
         }
 
-        /* Print Layout - Hidden by default */
-        #print-layout { display: none; background: white; padding: 20px; color: black; }
-
         @media print {
-            body * { visibility: hidden; }
-            #print-layout, #print-layout * { visibility: visible; }
-            #print-layout { display: block; position: absolute; left: 0; top: 0; width: 100%; padding: 0; }
+            body * {
+                visibility: hidden;
+            }
+            #print-layout, #print-layout * {
+                visibility: visible;
+            }
+            #print-layout {
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+            }
             
-            .print-header { text-align: center; margin-bottom: 20px; }
-            .print-header h1 { font-size: 24px; text-transform: uppercase; margin-bottom: 5px; }
-            .print-header p { font-size: 14px; color: #555; }
+            .print-header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .print-header h1 {
+                font-size: 24px;
+                text-transform: uppercase;
+                margin-bottom: 5px;
+            }
+            .print-header p {
+                font-size: 14px;
+                color: #555;
+            }
             
-            .print-meta { display: flex; justify-content: space-between; border-top: 2px solid black; border-bottom: 2px solid black; padding: 10px 0; margin-bottom: 20px; font-size: 14px; }
+            .print-meta {
+                display: flex;
+                justify-content: space-between;
+                border-top: 2px solid black;
+                border-bottom: 2px solid black;
+                padding: 10px 0;
+                margin-bottom: 20px;
+                font-size: 14px;
+            }
 
-            .print-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            .print-table th, .print-table td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 14px; }
-            .print-table th { background: #f9f9f9; font-weight: bold; }
+            .print-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            .print-table th, .print-table td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: center;
+                font-size: 14px;
+            }
+            .print-table th {
+                background: #f9f9f9;
+                font-weight: bold;
+            }
 
-            .print-totals { width: 50%; float: right; font-size: 14px; }
-            .print-totals-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dotted #ccc; }
-            .print-totals-row.bold { font-weight: bold; border-bottom: none; }
-            .print-footer { clear: both; padding-top: 20px; text-align: right; font-size: 12px; color: #555; }
+            .print-totals {
+                width: 50%;
+                float: right;
+                font-size: 14px;
+            }
+            .print-totals-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 5px 0;
+                border-bottom: 1px dotted #ccc;
+            }
+            .print-totals-row.bold {
+                font-weight: bold;
+                border-bottom: none;
+            }
+            .print-footer {
+                clear: both;
+                padding-top: 20px;
+                text-align: right;
+                font-size: 12px;
+                color: #555;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div id="loader"><i class="fa-solid fa-spinner fa-spin"></i> &nbsp; Syncing Cloud...</div>
+    <div id="view-login" class="container active">
+        <div class="login-card">
+            <h2><i class="fa-solid fa-lock"></i> Secure Access</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">Enter your passcode to access the cloud billing system.</p>
+            <input type="password" id="passcodeInput" class="form-control" placeholder="••••••">
+            <button class="btn btn-save" style="width: 100%;" onclick="verifyLogin()" id="loginBtn">
+                <span id="loginBtnText">Unlock System</span>
+            </button>
+            <p id="loginError" style="color: red; display: none; font-size: 0.85rem; margin-top: 15px; font-weight: 500;">Incorrect Passcode!</p>
+        </div>
+    </div>
 
-    <nav class="navbar">
+    <nav class="navbar" id="main-navbar">
         <div class="logo">
-            <i class="fa-solid fa-gem"></i> Fine Bill
-            <span id="cloudStatus" class="cloud-status"><i class="fa-solid fa-cloud-arrow-down"></i> Offline</span>
+            <i class="fa-solid fa-gem"></i> Fine Weight Bill
+            <span style="font-size: 0.6rem; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle;">CLOUD</span>
         </div>
         <div class="menu-container">
             <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-ellipsis-vertical"></i></button>
             <div class="dropdown" id="dropdown-menu">
                 <a href="#" onclick="switchView('new-bill'); toggleMenu();"><i class="fa-solid fa-house"></i> New Bill</a>
                 <a href="#" onclick="switchView('history'); toggleMenu();"><i class="fa-solid fa-chart-simple"></i> History</a>
-                <a href="#" onclick="switchView('settings'); toggleMenu();"><i class="fa-solid fa-gear"></i> Settings & Cloud</a>
+                <a href="#" onclick="switchView('settings'); toggleMenu();"><i class="fa-solid fa-gear"></i> Settings</a>
                 <a href="#" onclick="clearForm(); toggleMenu();"><i class="fa-solid fa-wand-magic-sparkles"></i> Clear Form</a>
             </div>
         </div>
     </nav>
 
-    <div id="view-new-bill" class="container active">
+    <div id="view-new-bill" class="container">
         <div class="card">
             <h2>Customer Details</h2>
             <div class="form-group">
@@ -498,7 +591,7 @@
         <div class="card">
             <h2>New Items (Sale)</h2>
             <div id="sale-items-container">
-                <div class="item-table-header row">
+                <div class="item-table-header row" style="margin-bottom: 5px;">
                     <div class="col" style="flex: 2; font-size: 0.8rem; color: var(--text-muted);">Type</div>
                     <div class="col" style="flex: 3; font-size: 0.8rem; color: var(--text-muted);">Item</div>
                     <div class="col" style="flex: 2; font-size: 0.8rem; color: var(--text-muted);">Wt (g)</div>
@@ -513,7 +606,7 @@
         <div class="card">
             <h2>Old Gold (Jama)</h2>
             <div id="jama-items-container">
-                <div class="item-table-header row">
+                <div class="item-table-header row" style="margin-bottom: 5px;">
                     <div class="col" style="flex: 2; font-size: 0.8rem; color: var(--text-muted);">Type</div>
                     <div class="col" style="flex: 3; font-size: 0.8rem; color: var(--text-muted);">Item</div>
                     <div class="col" style="flex: 2; font-size: 0.8rem; color: var(--text-muted);">Wt (g)</div>
@@ -527,6 +620,7 @@
 
         <div class="card settlement-card" style="margin-bottom: 100px;">
             <h2>Settlement</h2>
+            
             <div class="row">
                 <div class="col form-group">
                     <label>FINE GOLD RATE (10G)</label>
@@ -570,16 +664,16 @@
                 <textarea id="privateNote" class="form-control" rows="2" placeholder="Private note..."></textarea>
             </div>
         </div>
+    </div>
 
-        <div class="bottom-actions">
-            <button class="btn btn-copy" onclick="copyText()"><i class="fa-regular fa-clipboard"></i> Copy Text</button>
-            <button class="btn btn-save" onclick="saveAndPrint()"><i class="fa-solid fa-check"></i> Save & Print PDF</button>
-        </div>
+    <div class="bottom-actions" id="main-bottom-actions">
+        <button class="btn btn-copy" onclick="copyText()"><i class="fa-regular fa-clipboard"></i> Copy Text</button>
+        <button class="btn btn-save" id="btnSavePrint" onclick="saveAndPrint()"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Print</button>
     </div>
 
     <div id="view-history" class="container">
         <div class="card">
-            <h2><i class="fa-solid fa-book"></i> Bill History</h2>
+            <h2><i class="fa-solid fa-book"></i> Cloud Bill History</h2>
             <input type="text" class="search-box" id="searchHistory" placeholder="Search Customer..." oninput="renderHistory()">
             <div id="history-list"></div>
         </div>
@@ -587,7 +681,7 @@
 
     <div id="view-settings" class="container">
         <div class="card">
-            <h2><i class="fa-solid fa-store"></i> Shop Info</h2>
+            <h2>Shop Settings</h2>
             <div class="form-group">
                 <label>SHOP NAME</label>
                 <input type="text" id="shopName" class="form-control" value="Asc Estimate">
@@ -596,23 +690,21 @@
                 <label>ADDRESS</label>
                 <input type="text" id="shopAddress" class="form-control" placeholder="Shop Address">
             </div>
+            <button class="btn btn-save" style="width: 100%; margin-top: 10px;" id="btnSaveSettings" onclick="saveSettings()">Save to Cloud</button>
         </div>
 
-        <div class="card" style="border: 2px solid var(--accent-blue);">
-            <h2><i class="fa-solid fa-cloud"></i> Supabase Cloud Sync</h2>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px;">Fill these to access your data from any device. No login required.</p>
+        <div class="card">
+            <h2><i class="fa-solid fa-database"></i> Cloud Backup & Restore</h2>
             <div class="form-group">
-                <label>PROJECT URL</label>
-                <input type="text" id="sbUrl" class="form-control" placeholder="https://your-project.supabase.co">
+                <button class="btn" style="background: #e2e8f0; color: var(--text-dark); width: 100%; margin-bottom: 15px;" onclick="exportBackupJSON()">
+                    <i class="fa-solid fa-download"></i> Export Data (JSON)
+                </button>
             </div>
             <div class="form-group">
-                <label>ANON / PUBLIC KEY</label>
-                <input type="password" id="sbKey" class="form-control" placeholder="eyJhbGciOiJIUzI1NiIs...">
+                <label>Restore Data from JSON</label>
+                <input type="file" id="importFileInput" class="form-control" accept=".json" onchange="importBackupJSON(event)">
             </div>
-            <button class="btn btn-sync" onclick="manualSync()"><i class="fa-solid fa-rotate"></i> Connect & Sync Now</button>
         </div>
-
-        <button class="btn btn-save" style="width: 100%;" onclick="saveSettings()">Save All Settings</button>
     </div>
 
     <div id="print-layout">
@@ -641,7 +733,8 @@
                     <th>Fine</th>
                 </tr>
             </thead>
-            <tbody id="p-table-body"></tbody>
+            <tbody id="p-table-body">
+            </tbody>
         </table>
 
         <div class="print-totals">
@@ -671,142 +764,146 @@
                 <span id="p-balance"></span>
             </div>
         </div>
+        
         <div class="print-footer">
             <span id="p-rate-note"></span>
         </div>
     </div>
 
     <script>
-        // Data State
+        // --- SUPABASE CONFIGURATION ---
+        // INSERT YOUR URL AND ANON KEY HERE
+        const SUPABASE_URL = 'https://supabase.com/dashboard/project/jgkbaeephdkqniipjcij';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impna2JhZWVwaGRrcW5paXBqY2lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0NTQxNzcsImV4cCI6MjA5ODAzMDE3N30.56M1h6i7mLL9bsO1BoQseE9vQnVoPdmh9PUf0v5rCx0';
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // App State
         let saleItems = [];
         let jamaItems = [];
-        let history = JSON.parse(localStorage.getItem('fineWeightBill_history')) || [];
+        let history = [];
+        let appSettings = { name: "Asc Estimate", address: "" };
         let currentEditId = null;
 
-        // Supabase Client Config
-        const { createClient } = supabase;
-        let sbClient = null;
+        // Login Logic
+        async function verifyLogin() {
+            const code = document.getElementById('passcodeInput').value;
+            const btnText = document.getElementById('loginBtnText');
+            const errorMsg = document.getElementById('loginError');
 
-        // Init App
-        window.onload = async () => {
-            loadLocalSettings();
-            setInitialData();
-            addSaleItem(); 
+            if (code === 'ASC123') {
+                errorMsg.style.display = 'none';
+                btnText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting to Cloud...';
+                document.getElementById('passcodeInput').disabled = true;
+
+                try {
+                    await fetchCloudData();
+                    
+                    // Show Main App
+                    document.getElementById('view-login').style.display = 'none';
+                    document.getElementById('main-navbar').style.display = 'flex';
+                    document.getElementById('main-bottom-actions').style.display = 'flex';
+                    switchView('new-bill');
+                    
+                    setInitialData();
+                    if(saleItems.length === 0) addSaleItem(); // Default 1 row
+                    
+                } catch (err) {
+                    errorMsg.innerText = "Cloud Error: Ensure Supabase credentials are correct and table exists.";
+                    errorMsg.style.display = 'block';
+                    btnText.innerText = 'Unlock System';
+                    document.getElementById('passcodeInput').disabled = false;
+                    console.error(err);
+                }
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        // --- Cloud Sync Functions ---
+        async function fetchCloudData() {
+            // Fetch the single row (id = 1) containing all app data
+            const { data, error } = await supabaseClient.from('store_data').select('*').eq('id', 1).single();
             
-            // Auto connect if keys exist in local storage
-            let url = document.getElementById('sbUrl').value;
-            let key = document.getElementById('sbKey').value;
-            if(url && key) {
-                await initAndFetchCloudData(url, key);
-            }
-        };
-
-        function showLoader(show) {
-            document.getElementById('loader').style.display = show ? 'flex' : 'none';
-        }
-
-        async function initAndFetchCloudData(url, key) {
-            try {
-                showLoader(true);
-                sbClient = createClient(url, key);
+            if (error && error.code === 'PGRST116') {
+                // Row doesn't exist, insert standard initialization row
+                await supabaseClient.from('store_data').insert([{
+                    id: 1, 
+                    history_json: [], 
+                    settings_json: {name: 'Asc Estimate', address: ''}
+                }]);
+                history = [];
+            } else if (data) {
+                history = data.history_json || [];
+                appSettings = data.settings_json || {name: 'Asc Estimate', address: ''};
                 
-                // Fetch Settings from Cloud
-                const { data: sData, error: sErr } = await sbClient.from('app_settings').select('data').eq('id', 1).single();
-                if(sData && !sErr) {
-                    document.getElementById('shopName').value = sData.data.name;
-                    document.getElementById('shopAddress').value = sData.data.address;
-                    localStorage.setItem('fineWeightBill_settings', JSON.stringify(sData.data));
-                }
-
-                // Fetch Bills from Cloud
-                const { data: bData, error: bErr } = await sbClient.from('bills').select('data').order('id', { ascending: false });
-                if(bData && !bErr) {
-                    history = bData.map(row => row.data);
-                    localStorage.setItem('fineWeightBill_history', JSON.stringify(history));
-                }
-
-                document.getElementById('cloudStatus').innerHTML = '<i class="fa-solid fa-cloud"></i> Online';
-                document.getElementById('cloudStatus').className = 'cloud-status online';
-                
-                if(document.getElementById('view-history').classList.contains('active')) {
-                    renderHistory();
-                }
-
-            } catch (err) {
-                console.error("Cloud Error:", err);
-                alert("Failed to connect to Supabase. Check your URL and Key.");
-                document.getElementById('cloudStatus').innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> Offline';
-                document.getElementById('cloudStatus').className = 'cloud-status';
-                sbClient = null;
-            } finally {
-                showLoader(false);
+                // Populate Settings View
+                document.getElementById('shopName').value = appSettings.name || '';
+                document.getElementById('shopAddress').value = appSettings.address || '';
+            } else if (error) {
+                throw error;
             }
         }
 
-        async function manualSync() {
-            let url = document.getElementById('sbUrl').value.trim();
-            let key = document.getElementById('sbKey').value.trim();
-            if(!url || !key) {
-                alert("Please enter both Supabase URL and Key.");
-                return;
+        async function syncToCloud() {
+            appSettings = {
+                name: document.getElementById('shopName').value,
+                address: document.getElementById('shopAddress').value
+            };
+            
+            const { error } = await supabaseClient.from('store_data').update({
+                history_json: history,
+                settings_json: appSettings
+            }).eq('id', 1);
+
+            if (error) {
+                console.error("Sync Error:", error);
+                alert("Failed to sync to cloud. Check your connection.");
+                throw error;
             }
-            saveLocalSettings();
-            await initAndFetchCloudData(url, key);
-            alert("Cloud Synced Successfully!");
         }
 
         // Navigation
-        function toggleMenu() { document.getElementById('dropdown-menu').classList.toggle('active'); }
+        function toggleMenu() {
+            document.getElementById('dropdown-menu').classList.toggle('active');
+        }
+
         function switchView(viewId) {
-            document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.container').forEach(c => {
+                if(c.id !== 'view-login') c.classList.remove('active');
+            });
             document.getElementById('view-' + viewId).classList.add('active');
+            
+            // Handle bottom action visibility
+            if(viewId === 'new-bill') {
+                document.getElementById('main-bottom-actions').style.display = 'flex';
+            } else {
+                document.getElementById('main-bottom-actions').style.display = 'none';
+            }
+
             if (viewId === 'history') renderHistory();
             window.scrollTo(0,0);
         }
 
-        function generateInv() { return 'INV-' + Math.floor(100000 + Math.random() * 900000); }
+        function generateInv() {
+            return 'INV-' + Math.floor(100000 + Math.random() * 900000);
+        }
+
         function setInitialData() {
             document.getElementById('invNo').value = generateInv();
             document.getElementById('billDate').valueAsDate = new Date();
             currentEditId = null;
         }
-
-        // Settings LocalStorage
-        function loadLocalSettings() {
-            let s = JSON.parse(localStorage.getItem('fineWeightBill_settings'));
-            if (s) {
-                document.getElementById('shopName').value = s.name || '';
-                document.getElementById('shopAddress').value = s.address || '';
-                document.getElementById('sbUrl').value = s.sbUrl || '';
-                document.getElementById('sbKey').value = s.sbKey || '';
-            }
-        }
         
         async function saveSettings() {
-            saveLocalSettings();
-            
-            // Push settings to Cloud if connected
-            if(sbClient) {
-                showLoader(true);
-                let cloudSettings = {
-                    name: document.getElementById('shopName').value,
-                    address: document.getElementById('shopAddress').value
-                };
-                await sbClient.from('app_settings').upsert({ id: 1, data: cloudSettings });
-                showLoader(false);
-            }
-            alert("Settings Saved!");
-            switchView('new-bill');
-        }
-
-        function saveLocalSettings() {
-            let s = {
-                name: document.getElementById('shopName').value,
-                address: document.getElementById('shopAddress').value,
-                sbUrl: document.getElementById('sbUrl').value.trim(),
-                sbKey: document.getElementById('sbKey').value.trim()
-            };
-            localStorage.setItem('fineWeightBill_settings', JSON.stringify(s));
+            let btn = document.getElementById('btnSaveSettings');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+            try {
+                await syncToCloud();
+                alert("Settings Saved to Cloud!");
+                switchView('new-bill');
+            } catch (e) {}
+            btn.innerHTML = 'Save to Cloud';
         }
 
         // Dynamic Rows
@@ -864,11 +961,14 @@
 
         // Calculations
         function calculateTotals() {
-            let totalSaleFine = 0; let totalJamaFine = 0;
+            let totalSaleFine = 0;
+            let totalJamaFine = 0;
+
             saleItems.forEach(id => { totalSaleFine += parseFloat(document.getElementById(`sale-fine-${id}`).value) || 0; });
             jamaItems.forEach(id => { totalJamaFine += parseFloat(document.getElementById(`jama-fine-${id}`).value) || 0; });
 
             let netFine = totalSaleFine - totalJamaFine;
+
             let goldRate = parseFloat(document.getElementById('goldRate').value) || 0;
             let grandTotal = (netFine * (goldRate / 10)); 
             if(grandTotal < 0) grandTotal = 0;
@@ -876,9 +976,11 @@
             let cashPaid = parseFloat(document.getElementById('cashPaid').value) || 0;
             let balance = grandTotal - cashPaid;
 
+            // Update UI
             document.getElementById('txtSaleFine').innerText = totalSaleFine.toFixed(3) + ' g';
             document.getElementById('txtJamaFine').innerText = totalJamaFine.toFixed(3) + ' g';
             document.getElementById('txtNetFine').innerText = netFine.toFixed(3) + ' g';
+            
             document.getElementById('txtGrandTotal').innerText = '₹ ' + Math.round(grandTotal).toLocaleString('en-IN');
             document.getElementById('txtBalanceDue').innerText = '₹ ' + Math.round(balance).toLocaleString('en-IN');
         }
@@ -894,14 +996,21 @@
             document.getElementById('privateNote').value = '';
             
             document.querySelectorAll('.item-row').forEach(el => el.remove());
-            saleItems = []; jamaItems = [];
-            addSaleItem(); setInitialData(); calculateTotals();
+            saleItems = [];
+            jamaItems = [];
+            addSaleItem();
+            setInitialData();
+            calculateTotals();
         }
 
-        // Save & Print
+        // Save to Cloud & Print
         async function saveAndPrint() {
             let name = document.getElementById('customerName').value;
             if(!name) { alert("Please enter Customer Name"); return; }
+
+            let btn = document.getElementById('btnSavePrint');
+            let originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Syncing to Cloud...';
 
             let billData = {
                 id: currentEditId || Date.now(),
@@ -931,35 +1040,31 @@
                 amount: document.getElementById('txtGrandTotal').innerText.replace('₹ ', '').replace(/,/g, '')
             };
 
-            // Save to Local History
+            // Update local state
             if(currentEditId) {
                 let index = history.findIndex(h => h.id === currentEditId);
                 history[index] = billData;
             } else {
                 history.unshift(billData);
             }
-            localStorage.setItem('fineWeightBill_history', JSON.stringify(history));
 
-            // Save to Supabase Cloud
-            if(sbClient) {
-                showLoader(true);
-                try {
-                    await sbClient.from('bills').upsert({ id: billData.id, data: billData });
-                } catch(e) {
-                    console.error("Failed to sync bill to cloud:", e);
-                }
-                showLoader(false);
+            try {
+                // Sync updated arrays to Supabase
+                await syncToCloud();
+                
+                // Prepare Print Layout
+                preparePrint(billData);
+                window.print();
+            } catch (err) {
+                alert("Failed to sync bill to cloud. Please try again.");
             }
-
-            // Prepare Print
-            preparePrint(billData);
-            window.print();
+            
+            btn.innerHTML = originalContent;
         }
 
         function preparePrint(data) {
-            let s = JSON.parse(localStorage.getItem('fineWeightBill_settings')) || {name: 'ASC ESTIMATE', address: ''};
-            document.getElementById('p-shop-name').innerText = s.name.toUpperCase();
-            document.getElementById('p-shop-address').innerText = s.address || '';
+            document.getElementById('p-shop-name').innerText = appSettings.name.toUpperCase();
+            document.getElementById('p-shop-address').innerText = appSettings.address;
             
             document.getElementById('p-customer').innerText = data.customer;
             document.getElementById('p-mobile').innerText = data.mobile ? `+91 ${data.mobile}` : '';
@@ -967,7 +1072,8 @@
             document.getElementById('p-date').innerText = data.date;
 
             let tbody = document.getElementById('p-table-body');
-            tbody.innerHTML = ''; let sr = 1;
+            tbody.innerHTML = '';
+            let sr = 1;
             
             data.saleData.forEach(item => {
                 if(item.wt) {
@@ -1019,16 +1125,14 @@
         }
 
         async function deleteBill(id) {
-            if(confirm("Delete this bill?")) {
+            if(confirm("Delete this bill from cloud?")) {
                 history = history.filter(h => h.id !== id);
-                localStorage.setItem('fineWeightBill_history', JSON.stringify(history));
-                
-                if(sbClient) {
-                    showLoader(true);
-                    await sbClient.from('bills').delete().eq('id', id);
-                    showLoader(false);
+                try {
+                    await syncToCloud();
+                    renderHistory();
+                } catch (e) {
+                    alert("Failed to delete from cloud.");
                 }
-                renderHistory();
             }
         }
 
@@ -1047,8 +1151,8 @@
             document.getElementById('city').value = data.city;
             document.getElementById('goldRate').value = data.goldRate;
             document.getElementById('silverRate').value = data.silverRate;
-            document.getElementById('cashPaid').value = data.cashPaid || '0';
-            document.getElementById('privateNote').value = data.note || '';
+            document.getElementById('cashPaid').value = data.cashPaid;
+            document.getElementById('privateNote').value = data.note;
 
             data.saleData.forEach(item => addSaleItem(item));
             if(saleItems.length === 0) addSaleItem();
@@ -1061,17 +1165,30 @@
         function shareBill(id) {
             let data = history.find(h => h.id === id);
             if(!data) return;
-            let s = JSON.parse(localStorage.getItem('fineWeightBill_settings')) || {name: 'ASC ESTIMATE'};
+            
             let totalAmount = Math.round(parseFloat(data.amount)).toLocaleString('en-IN');
             let cashPaid = parseFloat(data.cashPaid) || 0;
             let balance = Math.round(parseFloat(data.amount) - cashPaid).toLocaleString('en-IN');
 
-            let shareText = `*${s.name.toUpperCase()}*\n\n*Invoice:* ${data.invNo}\n*Date:* ${data.date}\n*Customer:* ${data.customer}\n------------------------\n*Grand Total:* ₹ ${totalAmount}\n*Advance/Paid:* ₹ ${cashPaid.toLocaleString('en-IN')}\n*Balance Due:* ₹ ${balance}\n------------------------\nThank you!`;
+            let shareText = `*${appSettings.name.toUpperCase()}*\n\n`;
+            shareText += `*Invoice:* ${data.invNo}\n`;
+            shareText += `*Date:* ${data.date}\n`;
+            shareText += `*Customer:* ${data.customer}\n`;
+            shareText += `------------------------\n`;
+            shareText += `*Grand Total:* ₹ ${totalAmount}\n`;
+            shareText += `*Advance/Paid:* ₹ ${cashPaid.toLocaleString('en-IN')}\n`;
+            shareText += `*Balance Due:* ₹ ${balance}\n`;
+            shareText += `------------------------\n`;
+            shareText += `Thank you for your business!`;
 
             if (navigator.share) {
-                navigator.share({ title: `Bill - ${data.customer}`, text: shareText }).catch(console.error);
+                navigator.share({
+                    title: `Bill - ${data.customer}`,
+                    text: shareText
+                }).catch(console.error);
             } else {
-                window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+                let encodedText = encodeURIComponent(shareText);
+                window.open(`https://wa.me/?text=${encodedText}`, '_blank');
             }
         }
 
@@ -1079,6 +1196,61 @@
             let text = `Bill: ${document.getElementById('invNo').value}\nCustomer: ${document.getElementById('customerName').value}\nAmount: ${document.getElementById('txtGrandTotal').innerText}`;
             navigator.clipboard.writeText(text);
             alert("Copied to clipboard");
+        }
+
+        // Backup & Restore via Cloud
+        function exportBackupJSON() {
+            let backupPackage = {
+                appIdentifier: "fineWeightBillApp_cloud_backup",
+                exportedAt: new Date().toISOString(),
+                settings: appSettings,
+                history: history
+            };
+            let blob = new Blob([JSON.stringify(backupPackage, null, 2)], { type: "application/json" });
+            let url = URL.createObjectURL(blob);
+            let downloadAnchor = document.createElement('a');
+            downloadAnchor.href = url;
+            let today = new Date().toISOString().split('T')[0];
+            downloadAnchor.download = `FineWeightBill_CloudBackup_${today}.json`;
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            document.body.removeChild(downloadAnchor);
+            URL.revokeObjectURL(url);
+        }
+
+        async function importBackupJSON(event) {
+            let file = event.target.files[0];
+            if (!file) return;
+
+            let reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    let parsedData = JSON.parse(e.target.result);
+                    
+                    if (!parsedData.history) {
+                        alert("Error: Missing valid backup data format.");
+                        return;
+                    }
+
+                    if (confirm("Warning: Importing this file will OVERWRITE your CLOUD database with this file's data. Proceed?")) {
+                        history = parsedData.history;
+                        if (parsedData.settings) {
+                            appSettings = parsedData.settings;
+                            document.getElementById('shopName').value = appSettings.name;
+                            document.getElementById('shopAddress').value = appSettings.address;
+                        }
+                        
+                        await syncToCloud();
+                        alert("Data successfully restored to the Cloud!");
+                        switchView('new-bill');
+                    }
+                } catch (err) {
+                    alert("Failed to read JSON or sync to cloud.");
+                    console.error(err);
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
         }
     </script>
 </body>
