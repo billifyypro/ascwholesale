@@ -200,10 +200,10 @@
 
         .form-control {
             width: 100%;
-            padding: 12px;
+            padding: 13px 12px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            font-size: 0.95rem;
+            font-size: 16px;
             outline: none;
             background: #f8fafc;
             transition: all 0.2s;
@@ -244,19 +244,33 @@
         
         .item-row {
             display: flex;
+            flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
             align-items: center;
         }
 
         .item-row input, .item-row select {
-            padding: 10px;
+            padding: 11px 10px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            font-size: 0.9rem;
-            width: 100%;
-            background: #f8fafc;
+            font-size: 16px;
+            background: var(--white);
+            min-width: 0;
         }
+
+        .item-row .field-item { order: 1; flex: 1 1 100%; }
+        .item-row .field-material { order: 2; flex: 1 1 88px; }
+        .item-row .field-wt { order: 3; flex: 1 1 72px; }
+        .item-row .field-purity { order: 4; flex: 1 1 72px; }
+        .item-row .field-fine { order: 5; flex: 1 1 72px; }
+        .item-row .btn-remove { order: 6; }
+
+        .item-table-header { padding: 0 4px; }
 
         .btn-add {
             width: 100%;
@@ -341,6 +355,116 @@
             border: 1px solid var(--border-color);
             border-radius: 4px;
         }
+
+        /* UPI QR Toggle */
+        .qr-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding: 4px 2px;
+        }
+
+        .qr-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .qr-checkbox-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-blue);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .qr-edit-link {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 8px;
+        }
+
+        /* UPI QR Section */
+        .qr-section {
+            background: #f0fdf4;
+            border: 1px dashed #86efac;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 10px;
+        }
+
+        .qr-section-head {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #166534;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .qr-section-body {
+            text-align: center;
+        }
+
+        .qr-section-body img {
+            width: 160px;
+            height: 160px;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+        }
+
+        .qr-section-body p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* Analytics */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .stat-value.green { color: var(--btn-green-text); }
+        .stat-value.red { color: #dc2626; }
 
         /* Bottom Sticky Actions */
         .bottom-actions {
@@ -531,6 +655,77 @@
                 color: #555;
             }
         }
+
+        /* Mobile Friendly Tweaks */
+        @media (max-width: 480px) {
+            .navbar { padding: 14px 16px; }
+
+            .logo { font-size: 1.05rem; }
+
+            .menu-btn {
+                font-size: 1.3rem;
+                padding: 8px 10px;
+                min-width: 44px;
+                min-height: 44px;
+            }
+
+            .container { padding: 12px; }
+
+            .card { padding: 16px; border-radius: 10px; }
+
+            .card h2 { font-size: 1rem; }
+
+            .item-table-header { display: none; }
+
+            .btn-add {
+                padding: 13px;
+                font-size: 0.95rem;
+            }
+
+            .bottom-actions {
+                padding: 12px 14px;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 14px 10px;
+                font-size: 0.95rem;
+            }
+
+            .btn-copy { flex: 0.55; }
+
+            .cash-input {
+                width: 100px;
+                font-size: 16px;
+                padding: 8px;
+            }
+
+            .total-line { font-size: 0.9rem; }
+
+            .search-box { padding: 13px; font-size: 16px; }
+
+            .history-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .history-amount { text-align: left; }
+
+            .history-actions { justify-content: flex-start; }
+
+            .btn-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .dropdown { width: 190px; }
+
+            .dropdown a { padding: 13px 16px; font-size: 1rem; }
+
+            .login-card { padding: 24px 20px; }
+        }
     </style>
 </head>
 <body>
@@ -557,8 +752,10 @@
             <div class="dropdown" id="dropdown-menu">
                 <a href="#" onclick="switchView('new-bill'); toggleMenu();"><i class="fa-solid fa-house"></i> New Bill</a>
                 <a href="#" onclick="switchView('history'); toggleMenu();"><i class="fa-solid fa-chart-simple"></i> History</a>
+                <a href="#" onclick="switchView('analytics'); toggleMenu();"><i class="fa-solid fa-chart-line"></i> Analytics</a>
                 <a href="#" onclick="switchView('settings'); toggleMenu();"><i class="fa-solid fa-gear"></i> Settings</a>
                 <a href="#" onclick="clearForm(); toggleMenu();"><i class="fa-solid fa-wand-magic-sparkles"></i> Clear Form</a>
+                <a href="#" onclick="logout(); toggleMenu();"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>
     </nav>
@@ -658,6 +855,22 @@
                     <span id="txtBalanceDue" class="red">₹ 0</span>
                 </div>
             </div>
+
+            <div class="qr-toggle-row">
+                <label class="qr-checkbox-label">
+                    <input type="checkbox" id="includeQrCheckbox" onchange="toggleQr(this.checked)">
+                    <span>Add UPI QR on this Bill</span>
+                </label>
+                <button type="button" class="qr-edit-link" id="qrEditLink" style="display:none;" onclick="editUpiId()"><i class="fa-solid fa-pen"></i> Change UPI</button>
+            </div>
+
+            <div class="qr-section" id="qrSection" style="display:none;">
+                <div class="qr-section-head"><i class="fa-solid fa-qrcode"></i> Scan &amp; Pay (UPI)</div>
+                <div class="qr-section-body">
+                    <img id="upiQrImg" src="" alt="UPI QR Code">
+                    <p id="qrAmountLabel">Amount: ₹ 0</p>
+                </div>
+            </div>
             
             <div class="form-group" style="margin-top: 15px;">
                 <label><i class="fa-solid fa-pen-to-square"></i> Note:</label>
@@ -676,6 +889,44 @@
             <h2><i class="fa-solid fa-book"></i> Cloud Bill History</h2>
             <input type="text" class="search-box" id="searchHistory" placeholder="Search Customer..." oninput="renderHistory()">
             <div id="history-list"></div>
+        </div>
+    </div>
+
+    <div id="view-analytics" class="container">
+        <div class="card">
+            <h2><i class="fa-solid fa-chart-line"></i> Business Analytics</h2>
+            <div class="analytics-grid">
+                <div class="stat-box">
+                    <span class="stat-label">Total Bills</span>
+                    <span class="stat-value" id="stTotalBills">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Total Sales</span>
+                    <span class="stat-value" id="stTotalSales">₹ 0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Total Received</span>
+                    <span class="stat-value green" id="stTotalReceived">₹ 0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Total Udhaar (Due)</span>
+                    <span class="stat-value red" id="stTotalDue">₹ 0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Fine Gold Sold</span>
+                    <span class="stat-value" id="stGoldSold">0.000 g</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">Fine Silver Sold</span>
+                    <span class="stat-value" id="stSilverSold">0.000 g</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-hand-holding-dollar"></i> Udhaar List (Pending Dues)</h2>
+            <div id="udhaar-list"></div>
+            <p id="noUdhaarMsg" style="color: var(--text-muted); font-size: 0.9rem; text-align: center; display: none; padding: 10px 0;">No pending udhaar. All clear! 🎉</p>
         </div>
     </div>
 
@@ -764,6 +1015,11 @@
                 <span id="p-balance"></span>
             </div>
         </div>
+
+        <div id="p-qr-section" style="display:none; clear:both; text-align:center; padding-top: 20px;">
+            <img id="p-qr-img" src="" alt="UPI QR Code" style="width:140px; height:140px; border:1px solid #ddd; border-radius:6px; padding:6px;">
+            <p style="font-size:12px; margin-top:6px; font-weight:bold;">Scan &amp; Pay via UPI</p>
+        </div>
         
         <div class="print-footer">
             <span id="p-rate-note"></span>
@@ -798,6 +1054,7 @@
 
                 try {
                     await fetchCloudData();
+                    localStorage.setItem('ascFineWeightAuth', 'true');
                     
                     // Show Main App
                     document.getElementById('view-login').style.display = 'none';
@@ -882,6 +1139,7 @@
             }
 
             if (viewId === 'history') renderHistory();
+            if (viewId === 'analytics') renderAnalytics();
             window.scrollTo(0,0);
         }
 
@@ -893,6 +1151,7 @@
             document.getElementById('invNo').value = generateInv();
             document.getElementById('billDate').valueAsDate = new Date();
             currentEditId = null;
+            resetQrUI();
         }
         
         async function saveSettings() {
@@ -910,14 +1169,14 @@
         function createRowHTML(id, type) {
             return `
             <div class="item-row" id="${type}-${id}">
-                <select id="${type}-material-${id}" style="flex:2" onchange="calculateTotals()">
+                <select id="${type}-material-${id}" class="field-material" onchange="calculateTotals()">
                     <option value="Gold">Gold</option>
                     <option value="Silver">Silver</option>
                 </select>
-                <input type="text" id="${type}-item-${id}" placeholder="Item" style="flex:3">
-                <input type="number" id="${type}-wt-${id}" placeholder="Wt" style="flex:2" oninput="calcRowFine('${type}', ${id})">
-                <input type="number" id="${type}-purity-${id}" value="91.6" style="flex:2" oninput="calcRowFine('${type}', ${id})">
-                <input type="number" id="${type}-fine-${id}" placeholder="0.000" disabled style="flex:2">
+                <input type="text" id="${type}-item-${id}" class="field-item" placeholder="Item Name">
+                <input type="number" id="${type}-wt-${id}" class="field-wt" placeholder="Wt (g)" oninput="calcRowFine('${type}', ${id})">
+                <input type="number" id="${type}-purity-${id}" class="field-purity" value="91.6" placeholder="Purity %" oninput="calcRowFine('${type}', ${id})">
+                <input type="number" id="${type}-fine-${id}" class="field-fine" placeholder="Fine" disabled>
                 <button class="btn-remove" onclick="removeRow('${type}', ${id})"><i class="fa-solid fa-xmark"></i></button>
             </div>`;
         }
@@ -983,6 +1242,8 @@
             
             document.getElementById('txtGrandTotal').innerText = '₹ ' + Math.round(grandTotal).toLocaleString('en-IN');
             document.getElementById('txtBalanceDue').innerText = '₹ ' + Math.round(balance).toLocaleString('en-IN');
+
+            updateQr();
         }
 
         function clearForm() {
@@ -1037,7 +1298,8 @@
                     purity: document.getElementById(`jama-purity-${id}`).value,
                     fine: document.getElementById(`jama-fine-${id}`).value
                 })),
-                amount: document.getElementById('txtGrandTotal').innerText.replace('₹ ', '').replace(/,/g, '')
+                amount: document.getElementById('txtGrandTotal').innerText.replace('₹ ', '').replace(/,/g, ''),
+                showQr: document.getElementById('includeQrCheckbox').checked
             };
 
             // Update local state
@@ -1096,6 +1358,18 @@
             document.getElementById('p-paid').innerText = '₹ ' + (data.cashPaid || 0);
             document.getElementById('p-balance').innerText = document.getElementById('txtBalanceDue').innerText;
             document.getElementById('p-rate-note').innerText = `Rates applied on Fine Weight. Gold (Fine 10g): ₹${data.goldRate || 0}`;
+
+            let upiId = localStorage.getItem('ascUpiId');
+            let pQrSection = document.getElementById('p-qr-section');
+            if (data.showQr && upiId) {
+                let payeeName = (appSettings.name || 'Shop').replace(/[^a-zA-Z0-9 ]/g, '') || 'Shop';
+                let amount = parseFloat(data.amount) || 0;
+                let upiString = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payeeName)}&am=${amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent('Bill ' + data.invNo)}`;
+                document.getElementById('p-qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiString)}`;
+                pQrSection.style.display = 'block';
+            } else {
+                pQrSection.style.display = 'none';
+            }
         }
 
         // History
@@ -1157,6 +1431,9 @@
             data.saleData.forEach(item => addSaleItem(item));
             if(saleItems.length === 0) addSaleItem();
             data.jamaData.forEach(item => addJamaItem(item));
+
+            document.getElementById('includeQrCheckbox').checked = !!data.showQr;
+            showQrSection(!!data.showQr);
 
             calculateTotals();
             switchView('new-bill');
@@ -1252,6 +1529,152 @@
             };
             reader.readAsText(file);
         }
+
+        // --- UPI QR Code ---
+        function resetQrUI() {
+            let cb = document.getElementById('includeQrCheckbox');
+            if (cb) cb.checked = false;
+            showQrSection(false);
+        }
+
+        function showQrSection(show) {
+            document.getElementById('qrSection').style.display = show ? 'block' : 'none';
+            document.getElementById('qrEditLink').style.display = show ? 'inline-block' : 'none';
+            if (show) updateQr();
+        }
+
+        function toggleQr(checked) {
+            if (checked) {
+                let upiId = localStorage.getItem('ascUpiId');
+                if (!upiId) {
+                    upiId = prompt("Enter your UPI ID (e.g. name@okhdfcbank):");
+                    if (upiId && upiId.trim()) {
+                        localStorage.setItem('ascUpiId', upiId.trim());
+                    } else {
+                        document.getElementById('includeQrCheckbox').checked = false;
+                        return;
+                    }
+                }
+            }
+            showQrSection(checked);
+        }
+
+        function editUpiId() {
+            let current = localStorage.getItem('ascUpiId') || '';
+            let upiId = prompt("Update your UPI ID:", current);
+            if (upiId !== null && upiId.trim()) {
+                localStorage.setItem('ascUpiId', upiId.trim());
+                updateQr();
+            }
+        }
+
+        function updateQr() {
+            let cb = document.getElementById('includeQrCheckbox');
+            if (!cb || !cb.checked) return;
+
+            let upiId = localStorage.getItem('ascUpiId');
+            if (!upiId) return;
+
+            let amountText = document.getElementById('txtGrandTotal').innerText.replace('₹', '').replace(/,/g, '').trim();
+            let amount = parseFloat(amountText) || 0;
+            let payeeName = (appSettings.name || 'Shop').replace(/[^a-zA-Z0-9 ]/g, '') || 'Shop';
+            let invNo = document.getElementById('invNo').value || '';
+
+            let upiString = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(payeeName)}&am=${amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent('Bill ' + invNo)}`;
+
+            let qrImg = document.getElementById('upiQrImg');
+            if (qrImg) qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(upiString)}`;
+
+            let label = document.getElementById('qrAmountLabel');
+            if (label) label.innerText = 'Amount: ₹ ' + Math.round(amount).toLocaleString('en-IN');
+        }
+
+        // --- Analytics ---
+        function renderAnalytics() {
+            let totalBills = history.length;
+            let totalSales = 0;
+            let totalReceived = 0;
+            let totalDue = 0;
+            let goldSold = 0;
+            let silverSold = 0;
+            let dueList = [];
+
+            history.forEach(h => {
+                let amt = parseFloat(h.amount) || 0;
+                let paid = parseFloat(h.cashPaid) || 0;
+                let due = amt - paid;
+
+                totalSales += amt;
+                totalReceived += paid;
+
+                if (due > 0) {
+                    totalDue += due;
+                    dueList.push({ id: h.id, customer: h.customer, date: h.date, invNo: h.invNo, due: due });
+                }
+
+                (h.saleData || []).forEach(item => {
+                    let fine = parseFloat(item.fine) || 0;
+                    if (item.material === 'Gold') goldSold += fine;
+                    if (item.material === 'Silver') silverSold += fine;
+                });
+            });
+
+            document.getElementById('stTotalBills').innerText = totalBills;
+            document.getElementById('stTotalSales').innerText = '₹ ' + Math.round(totalSales).toLocaleString('en-IN');
+            document.getElementById('stTotalReceived').innerText = '₹ ' + Math.round(totalReceived).toLocaleString('en-IN');
+            document.getElementById('stTotalDue').innerText = '₹ ' + Math.round(totalDue).toLocaleString('en-IN');
+            document.getElementById('stGoldSold').innerText = goldSold.toFixed(3) + ' g';
+            document.getElementById('stSilverSold').innerText = silverSold.toFixed(3) + ' g';
+
+            dueList.sort((a, b) => b.due - a.due);
+
+            let list = document.getElementById('udhaar-list');
+            list.innerHTML = '';
+            document.getElementById('noUdhaarMsg').style.display = dueList.length === 0 ? 'block' : 'none';
+
+            dueList.forEach(h => {
+                list.innerHTML += `
+                <div class="history-item">
+                    <div class="history-info">
+                        <h4>${h.customer}</h4>
+                        <p>${h.date} | ${h.invNo}</p>
+                    </div>
+                    <div class="history-amount">
+                        <h4 style="color:#dc2626;">₹ ${Math.round(h.due).toLocaleString('en-IN')}</h4>
+                        <div class="history-actions">
+                            <button class="btn-icon btn-whatsapp" onclick="shareBill(${h.id})" title="Remind on WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        }
+
+        // Logout
+        function logout() {
+            if(confirm("Logout from this device? You will need the passcode to unlock again.")) {
+                localStorage.removeItem('ascFineWeightAuth');
+                location.reload();
+            }
+        }
+
+        // Auto-login: stay logged in on this phone/browser once unlocked
+        (async function autoLogin() {
+            if (localStorage.getItem('ascFineWeightAuth') === 'true') {
+                try {
+                    await fetchCloudData();
+
+                    document.getElementById('view-login').style.display = 'none';
+                    document.getElementById('main-navbar').style.display = 'flex';
+                    document.getElementById('main-bottom-actions').style.display = 'flex';
+                    switchView('new-bill');
+
+                    setInitialData();
+                    if (saleItems.length === 0) addSaleItem();
+                } catch (err) {
+                    console.error("Auto-login cloud fetch failed, falling back to login screen:", err);
+                }
+            }
+        })();
     </script>
 </body>
 </html>
